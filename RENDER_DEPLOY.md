@@ -1,4 +1,4 @@
-# Douyin Video Downloader - Render.com Deployment
+# Dr. Will's Downloader - Render.com Deployment
 
 ## Quick Deploy
 
@@ -7,29 +7,46 @@
 3. Click "New +" → "Web Service"
 4. Connect your GitHub repository
 5. Configure the service:
-   - **Name**: douyin-downloader (or your preferred name)
+   - **Name**: dr-will-downloader
    - **Runtime**: Python 3
-   - **Build Command**: `pip install -r requirements.txt`
-   - **Start Command**: `gunicorn app:app`
+   - **Build Command**: See below
+   - **Start Command**: `python app.py`
    - **Plan**: Free
+
+## Build Command
+
+Render needs to install Chromium and FFmpeg:
+
+```bash
+pip install -r requirements.txt && playwright install chromium
+```
+
+For FFmpeg, add this Buildpack:
+- Environment → Buildpacks → Add: `https://github.com/matthew-brett/render-buildpack-ffmpeg`
 
 ## Environment Variables
 
-Set these in Render Dashboard → Environment:
-- `PORT`: 10000 (Render assigns this automatically)
+Set in Render Dashboard → Environment:
+- `PORT`: 5000
+- `PYTHON_VERSION`: 3.11
 
-## Requirements
+## Requirements.txt
 
-Create `requirements.txt`:
 ```
 flask>=2.0
 playwright>=1.40
 requests>=2.28
-gunicorn>=21.0
 ```
 
-## Notes
+## Important Notes
 
-- Playwright browsers will be installed automatically on first run
-- The free tier has limited compute and may timeout on slow connections
-- Downloads folder is ephemeral on Render's free tier - files are deleted on each deploy
+- Free tier spins down after 15 minutes of inactivity
+- First request after idle may take 30+ seconds to wake
+- Free tier has memory limits - may struggle with Playwright
+- Consider upgrading for production use
+
+## Troubleshooting
+
+- **Chromium not found**: Ensure `playwright install chromium` is in build command
+- **FFmpeg errors**: Add the FFmpeg buildpack
+- **Timeouts**: Free tier may timeout - check Render logs
