@@ -1,9 +1,7 @@
 services:
   - type: web
     name: dr-will-downloader
-    dockerfilePath: Dockerfile
+    runtime: docker
     plan: free
     startCommand: gunicorn app:app --bind 0.0.0.0:$PORT
-    envVars:
-      - key: PYTHON_VERSION
-        value: 3.11
+
