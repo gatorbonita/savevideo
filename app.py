@@ -176,8 +176,11 @@ def download():
         
         if dtype == 'audio':
             with urllib.request.urlopen(video_url) as r:
+                print("AUDIO STATUS:", r.status)
+                print("AUDIO HEADERS:", r.headers)
                 from io import BytesIO
                 video_data = BytesIO(r.read())
+                print("AUDIO FIRST 200:", video_data.getvalue()[:200])
             
             import tempfile
             with tempfile.NamedTemporaryFile(suffix='.mp4', delete=False) as tmp:
@@ -199,7 +202,10 @@ def download():
         else:
             req = urllib.request.Request(video_url, headers={'User-Agent': 'Mozilla/5.0'})
             with urllib.request.urlopen(req) as r:
+                print("STATUS:", r.status)
+                print("HEADERS:", r.headers)
                 data = r.read()
+                print("FIRST 200 BYTES:", data[:200])
             
             response = Response(data, mimetype='video/mp4')
             response.headers['filename'] = f'v_{vid}.mp4'
