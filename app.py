@@ -25,12 +25,13 @@ def find_video_url(u):
                 cl = int(cl)
             except:
                 cl = 0
-            if 'video' in ct and cl > 100000:
+            if 'video' in ct:
                 videos.append({'url': r.url, 'size': cl})
         page.on('response', cb)
-        page.goto(u, wait_until='domcontentloaded', timeout=30000)
+        page.goto(u, wait_until='networkidle', timeout=60000)
         vid = page.url.split('/video/')[1].split('?')[0] if '/video/' in page.url else str(int(time.time()))
-        page.wait_for_timeout(15000)
+        page.wait_for_timeout(5000)
+    print("Captured videos:", videos)
     if videos:
         best = max(videos, key=lambda x: x['size'])
         return best['url'], vid
